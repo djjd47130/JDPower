@@ -1,35 +1,31 @@
 unit JD.Power.Server;
 
 (*
-  JD Remote Shutdown Server Thread
+  JD Power Server Thread
   - Runs on all client computers which may need to receive shutdown command
   - HTTP Server listening for incoming shutdown command
   - Monitors UPS battery power, watches for power loss
   - Automatically hibernates this computer and any others upon power loss
-
 *)
 
 interface
 
 uses
-  System.Classes, System.SysUtils, System.Generics.Collections,
-  Winapi.WIndows,
-  ActiveX,
-  IdHTTP, IdHTTPServer, IdTCPConnection, IdCustomHTTPServer, IdTCPServer, IdCustomTCPServer,
-  IdContext, IdGlobal,
-  IdYarn, IdThread,
+  System.Classes, System.SysUtils,
+  Winapi.Windows, Winapi.ActiveX, Winapi.ShellAPI,
+  IdHTTP, IdHTTPServer, IdTCPConnection, IdCustomHTTPServer, IdTCPServer,
+  IdCustomTCPServer, IdContext, IdGlobal, IdYarn, IdThread,
   SuperObject,
-  ShellAPI,
   JD.Power.Common,
   JD.Power.Monitor;
 
 type
-  TRemoteShutdownServerContext = class;
-  TRemoteShutdownServer = class;
+  TJDPowerServerContext = class;
+  TJDPowerServerThread = class;
 
 
 
-  TRemoteShutdownServer = class(TThread)
+  TJDPowerServerThread = class(TThread)
   private
     FSvr: TIdHTTPServer;
     FCli: TIdHTTP;
@@ -43,9 +39,9 @@ type
     procedure LoadConfig;
     procedure HandleCommand(AContext: TIdContext;
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
-    procedure HandleGetStatus(AContext: TRemoteShutdownServerContext;
+    procedure HandleGetStatus(AContext: TJDPowerServerContext;
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
-    procedure HandlePostCommand(AContext: TRemoteShutdownServerContext;
+    procedure HandlePostCommand(AContext: TJDPowerServerContext;
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo;
       const O: ISuperObject);
     function GetStatusObj: ISuperObject;
@@ -59,7 +55,7 @@ type
     destructor Destroy; override;
   end;
 
-  TRemoteShutdownServerContext = class(TIdServerContext)
+  TJDPowerServerContext = class(TIdServerContext)
   private
 
   public
@@ -69,15 +65,15 @@ type
 
 implementation
 
-{ TRemoteShutdownServer }
+{ TJDPowerServerThread }
 
-constructor TRemoteShutdownServer.Create;
+constructor TJDPowerServerThread.Create;
 begin
   inherited Create(True);
   FConfig:= nil;
 end;
 
-destructor TRemoteShutdownServer.Destroy;
+destructor TJDPowerServerThread.Destroy;
 begin
   if Assigned(FConfig) then begin
     FConfig._Release;
@@ -86,11 +82,11 @@ begin
   inherited;
 end;
 
-procedure TRemoteShutdownServer.Init;
+procedure TJDPowerServerThread.Init;
 begin
   CoInitialize(nil);
   FSvr:= TIdHTTPServer.Create(nil);
-  FSvr.ContextClass:= TRemoteShutdownServerContext;
+  FSvr.ContextClass:= TJDPowerServerContext;
   FSvr.OnCommandGet:= HandleCommand;
   FSvr.OnCommandOther:= HandleCommand;
   LoadConfig;
@@ -104,7 +100,7 @@ begin
     TPowerSetting.psBatteryPercentage];
 end;
 
-procedure TRemoteShutdownServer.Uninit;
+procedure TJDPowerServerThread.Uninit;
 begin
   FreeAndNil(FMon);
   FSvr.Active:= False;
@@ -113,13 +109,13 @@ begin
   CoUninitialize;
 end;
 
-procedure TRemoteShutdownServer.PowerSourceChange(Sender: TObject;
+procedure TJDPowerServerThread.PowerSourceChange(Sender: TObject;
   const Src: TPowerSource);
 begin
   FSrc:= Src;
 end;
 
-procedure TRemoteShutdownServer.PowerBatteryPercent(Sender: TObject;
+procedure TJDPowerServerThread.PowerBatteryPercent(Sender: TObject;
   const Perc: Single);
 begin
   FPerc:= Perc;
@@ -131,7 +127,7 @@ begin
   end;
 end;
 
-procedure TRemoteShutdownServer.DoHibernate;
+procedure TJDPowerServerThread.DoHibernate;
 var
   A: TSuperArray;
   X: Integer;
@@ -151,7 +147,7 @@ begin
 
 end;
 
-procedure TRemoteShutdownServer.LoadConfig;
+procedure TJDPowerServerThread.LoadConfig;
 var
   FN: String;
   L: TStringList;
@@ -203,7 +199,7 @@ begin
   end;
 end;
 
-procedure TRemoteShutdownServer.Execute;
+procedure TJDPowerServerThread.Execute;
 var
   X: Integer;
 begin
@@ -229,11 +225,11 @@ begin
   end;
 end;
 
-procedure TRemoteShutdownServer.HandleCommand(AContext: TIdContext;
+procedure TJDPowerServerThread.HandleCommand(AContext: TIdContext;
   ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
 var
   R: String;
-  C: TRemoteShutdownServerContext;
+  C: TJDPowerServerContext;
   O: ISuperObject;
   function IsReq(const S: String): Boolean;
   begin
@@ -241,7 +237,7 @@ var
   end;
 begin
   //Received any type of command from the global server
-  C:= TRemoteShutdownServerContext(AContext);
+  C:= TJDPowerServerContext(AContext);
   R:= ARequestInfo.Document + '/';
   Delete(R, 1, 1);
   R:= Copy(R, 1, Pos('/', R)-1);
@@ -276,7 +272,7 @@ begin
   end;
 end;
 
-procedure TRemoteShutdownServer.HandleGetStatus(AContext: TRemoteShutdownServerContext;
+procedure TJDPowerServerThread.HandleGetStatus(AContext: TJDPowerServerContext;
   ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
 var
   R: ISuperObject;
@@ -286,8 +282,8 @@ begin
   AResponseInfo.ContentType:= 'application/json';
 end;
 
-procedure TRemoteShutdownServer.HandlePostCommand(
-  AContext: TRemoteShutdownServerContext; ARequestInfo: TIdHTTPRequestInfo;
+procedure TJDPowerServerThread.HandlePostCommand(
+  AContext: TJDPowerServerContext; ARequestInfo: TIdHTTPRequestInfo;
   AResponseInfo: TIdHTTPResponseInfo; const O: ISuperObject);
 var
   Cmd: String;
@@ -342,7 +338,7 @@ begin
 
 end;
 
-function TRemoteShutdownServer.GetStatusObj: ISuperObject;
+function TJDPowerServerThread.GetStatusObj: ISuperObject;
 begin
   //TODO: Return current snapshot of computer's status
   Result:= SO;
@@ -357,14 +353,14 @@ begin
 
 end;
 
-procedure TRemoteShutdownServer.Process;
+procedure TJDPowerServerThread.Process;
 begin
 
 end;
 
-{ TRemoteShutdownServerContext }
+{ TJDPowerServerContext }
 
-constructor TRemoteShutdownServerContext.Create(AConnection: TIdTCPConnection;
+constructor TJDPowerServerContext.Create(AConnection: TIdTCPConnection;
   AYarn: TIdYarn; AList: TIdContextThreadList);
 begin
   inherited;

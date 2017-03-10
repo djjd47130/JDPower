@@ -1,7 +1,7 @@
-object JDRemoteShutdownSvrTest: TJDRemoteShutdownSvrTest
+object JDPowerServerTest: TJDPowerServerTest
   Left = 0
   Top = 0
-  Caption = 'JDRemoteShutdownSvrTest'
+  Caption = 'JDPowerServerTest'
   ClientHeight = 418
   ClientWidth = 632
   Color = clBtnFace

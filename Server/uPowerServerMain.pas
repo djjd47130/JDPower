@@ -10,18 +10,18 @@ uses
   JD.Power.Server;
 
 type
-  TJDPowerServer = class(TService)
+  TJDPowerSvr = class(TService)
     procedure ServiceStart(Sender: TService; var Started: Boolean);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
     procedure ServiceAfterInstall(Sender: TService);
   private
-    FSvr: TRemoteShutdownServer;
+    FSvr: TJDPowerServerThread;
   public
     function GetServiceController: TServiceController; override;
   end;
 
 var
-  JDPowerServer: TJDPowerServer;
+  JDPowerSvr: TJDPowerSvr;
 
 implementation
 
@@ -29,15 +29,15 @@ implementation
 
 procedure ServiceController(CtrlCode: DWord); stdcall;
 begin
-  JDPowerServer.Controller(CtrlCode);
+  JDPowerSvr.Controller(CtrlCode);
 end;
 
-function TJDPowerServer.GetServiceController: TServiceController;
+function TJDPowerSvr.GetServiceController: TServiceController;
 begin
   Result := ServiceController;
 end;
 
-procedure TJDPowerServer.ServiceAfterInstall(Sender: TService);
+procedure TJDPowerSvr.ServiceAfterInstall(Sender: TService);
 var
   R: TRegistry;
 begin
@@ -47,7 +47,7 @@ begin
     if R.OpenKey('SYSTEM\CurrentControlSet\Services\'+Name, True) then begin
       try
         R.WriteString('Description',
-          'Waits for a remote command to shut down the system.');
+          'Waits for an incoming command to shut down the system.');
       finally
         R.CloseKey;
       end;
@@ -57,14 +57,14 @@ begin
   end;
 end;
 
-procedure TJDPowerServer.ServiceStart(Sender: TService;
+procedure TJDPowerSvr.ServiceStart(Sender: TService;
   var Started: Boolean);
 begin
-  FSvr:= TRemoteShutdownServer.Create;
+  FSvr:= TJDPowerServerThread.Create;
   FSvr.Start;
 end;
 
-procedure TJDPowerServer.ServiceStop(Sender: TService;
+procedure TJDPowerSvr.ServiceStop(Sender: TService;
   var Stopped: Boolean);
 begin
   FSvr.Terminate;

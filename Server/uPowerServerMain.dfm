@@ -1,4 +1,4 @@
-object JDPowerServer: TJDPowerServer
+object JDPowerSvr: TJDPowerSvr
   OldCreateOrder = False
   AllowPause = False
   DisplayName = 'JD Power Server Service'
