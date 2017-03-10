@@ -3,6 +3,7 @@
   "global_port": 65468,
   "display_name": "INNO102 Jerry's PC",
   "listen_port": 65469,
+  "battery_threshold": 20,
   "machines": [
     "INNO101",
     "INNO108"

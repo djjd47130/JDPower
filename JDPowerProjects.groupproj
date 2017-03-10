@@ -3,13 +3,7 @@
         <ProjectGuid>{2CF30A4A-9556-4492-91FF-061FCC17D7A5}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Global\JDPowerGlobal.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Server\JDPowerServer.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Client\JDPowerClient.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Test\JDPowerTest.dproj">
@@ -23,15 +17,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="JDPowerGlobal">
-        <MSBuild Projects="Global\JDPowerGlobal.dproj"/>
-    </Target>
-    <Target Name="JDPowerGlobal:Clean">
-        <MSBuild Projects="Global\JDPowerGlobal.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="JDPowerGlobal:Make">
-        <MSBuild Projects="Global\JDPowerGlobal.dproj" Targets="Make"/>
-    </Target>
     <Target Name="JDPowerServer">
         <MSBuild Projects="Server\JDPowerServer.dproj"/>
     </Target>
@@ -40,15 +25,6 @@
     </Target>
     <Target Name="JDPowerServer:Make">
         <MSBuild Projects="Server\JDPowerServer.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="JDPowerClient">
-        <MSBuild Projects="Client\JDPowerClient.dproj"/>
-    </Target>
-    <Target Name="JDPowerClient:Clean">
-        <MSBuild Projects="Client\JDPowerClient.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="JDPowerClient:Make">
-        <MSBuild Projects="Client\JDPowerClient.dproj" Targets="Make"/>
     </Target>
     <Target Name="JDPowerTest">
         <MSBuild Projects="Test\JDPowerTest.dproj"/>
@@ -60,13 +36,13 @@
         <MSBuild Projects="Test\JDPowerTest.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="JDPowerGlobal;JDPowerServer;JDPowerClient;JDPowerTest"/>
+        <CallTarget Targets="JDPowerServer;JDPowerTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="JDPowerGlobal:Clean;JDPowerServer:Clean;JDPowerClient:Clean;JDPowerTest:Clean"/>
+        <CallTarget Targets="JDPowerServer:Clean;JDPowerTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="JDPowerGlobal:Make;JDPowerServer:Make;JDPowerClient:Make;JDPowerTest:Make"/>
+        <CallTarget Targets="JDPowerServer:Make;JDPowerTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

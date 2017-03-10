@@ -4,6 +4,9 @@ unit JD.Power.Server;
   JD Remote Shutdown Server Thread
   - Runs on all client computers which may need to receive shutdown command
   - HTTP Server listening for incoming shutdown command
+  - Monitors UPS battery power, watches for power loss
+  - Automatically shuts down this computer and all others on UPS upon power loss
+
 *)
 
 interface
@@ -32,6 +35,8 @@ type
     FCli: TIdHTTP;
     FConfig: ISuperObject;
     FMon: TPowerMonitor;
+    FSrc: TPowerSource;
+    FPerc: Single;
     procedure Init;
     procedure Uninit;
     procedure Process;
@@ -44,12 +49,14 @@ type
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo;
       const O: ISuperObject);
     function GetStatusObj: ISuperObject;
+    procedure PowerBatteryPercent(Sender: TObject; const Perc: Single);
+    procedure PowerSourceChange(Sender: TObject; const Src: TPowerSource);
+    procedure DoHibernate;
   protected
     procedure Execute; override;
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function ServerURL(const ARes: String = ''): String;
   end;
 
   TRemoteShutdownServerContext = class(TIdServerContext)
@@ -87,66 +94,102 @@ begin
   FSvr.OnCommandGet:= HandleCommand;
   FSvr.OnCommandOther:= HandleCommand;
   LoadConfig;
-  FSvr.Active:= True;
   FCli:= TIdHTTP.Create(nil);
   FCli.HandleRedirects:= True;
+  FMon:= TPowerMonitor.Create(nil);
+  FMon.OnSourceChange:= PowerSourceChange;
+  FMon.OnBatteryPercent:= PowerBatteryPercent;
+  FMon.Settings:= [
+    TPowerSetting.psACDCPowerSource,
+    TPowerSetting.psBatteryPercentage];
 end;
 
 procedure TRemoteShutdownServer.Uninit;
 begin
+  FreeAndNil(FMon);
   FSvr.Active:= False;
   FreeAndNil(FCli);
   FreeAndNil(FSvr);
   CoUninitialize;
 end;
 
+procedure TRemoteShutdownServer.PowerSourceChange(Sender: TObject;
+  const Src: TPowerSource);
+begin
+  FSrc:= Src;
+end;
+
+procedure TRemoteShutdownServer.PowerBatteryPercent(Sender: TObject;
+  const Perc: Single);
+begin
+  FPerc:= Perc;
+  if FSrc = TPowerSource.poDC then begin
+    if FPerc <= FConfig.I['battery_threshold'] then begin
+      //UPS is on DC power, so it lost its input, and battery is below threshold
+      DoHibernate;
+    end;
+  end;
+end;
+
+procedure TRemoteShutdownServer.DoHibernate;
+begin
+  //Send command to all other computers first, telling them to hibernate
+
+
+  //Then, send command to this computer to hibernate
+
+
+end;
+
 procedure TRemoteShutdownServer.LoadConfig;
 var
   FN: String;
   L: TStringList;
-  O: ISuperObject;
   procedure SaveDef;
   begin
-    O:= SO;
-    O.S['global_host']:= 'LocalHost';
-    O.I['global_port']:= GLOBAL_PORT;
-    O.S['display_name']:= 'Untitled Machine';
-    O.I['listen_port']:= CLIENT_PORT;
-    O.O['machines']:= SA([]);
+    FConfig:= SO;
+    FConfig.S['global_host']:= 'LocalHost';
+    FConfig.I['global_port']:= GLOBAL_PORT;
+    FConfig.S['display_name']:= 'Untitled Machine';
+    FConfig.I['listen_port']:= CLIENT_PORT;
+    FConfig.I['battery_threshold']:= 20;
+    FConfig.O['machines']:= SA([]);
 
-    L.Text:= O.AsJSon(True);
+    L.Text:= FConfig.AsJSon(True);
     L.SaveToFile(FN);
   end;
 begin
-  if Assigned(FConfig) then begin
-    FConfig._Release;
-    FConfig:= nil;
-  end;
-
-  FN:= ExtractFilePath(ParamStr(0));
-  FN:= IncludeTrailingPathDelimiter(FN);
-  FN:= FN + 'JDPowerServer.json';
-  L:= TStringList.Create;
+  FSvr.Active:= False;
   try
-    if FileExists(FN) then begin
-      L.LoadFromFile(FN);
-      O:= SO(L.Text);
-      if not Assigned(O) then begin
-        SaveDef;
-      end;
-    end else begin
-      SaveDef;
+    if Assigned(FConfig) then begin
+      FConfig._Release;
+      FConfig:= nil;
     end;
 
-    FConfig:= O;
-    FConfig._AddRef;
-    FSvr.Bindings.Clear;
-    FSvr.Bindings.Add.SetBinding('', O.I['listen_port'], TIdIPVersion.Id_IPv4);
+    FN:= ExtractFilePath(ParamStr(0));
+    FN:= IncludeTrailingPathDelimiter(FN);
+    FN:= FN + 'JDPowerServer.json';
+    L:= TStringList.Create;
+    try
+      if FileExists(FN) then begin
+        L.LoadFromFile(FN);
+        FConfig:= SO(L.Text);
+        if not Assigned(FConfig) then begin
+          SaveDef;
+        end;
+      end else begin
+        SaveDef;
+      end;
+      FConfig._AddRef;
 
-    //TODO: Load list of other machines which are to be shut down if this one is
+      FSvr.Bindings.Clear;
+      FSvr.Bindings.Add.SetBinding('', FConfig.I['listen_port'], TIdIPVersion.Id_IPv4);
 
+    finally
+      FreeAndNil(L);
+    end;
   finally
-    L.Free;
+    FSvr.Active:= True;
   end;
 end;
 
@@ -322,38 +365,9 @@ begin
 
 end;
 
-function TRemoteShutdownServer.ServerURL(const ARes: String = ''): String;
-begin
-  //Return base URL for global server
-  Result:= 'http://' + FConfig.S['global_host'] + ':' + IntToStr(FConfig.I['global_port']) + '/';
-  if ARes <> '' then
-    Result:= Result + ARes + '/';
-end;
-
 procedure TRemoteShutdownServer.Process;
-  {$IFDEF V2}
-var
-  O: ISuperObject;
-  S: TMemoryStream;
-  {$ENDIF}
 begin
-  {$IFDEF V2}
-  O:= GetStatusObj;
-  S:= TMemoryStream.Create;
-  try
-    O.SaveTo(S);
-    S.Position:= 0;
-    try
-      FCli.Post(ServerURL('ping'), S);
-    except
-      on E: Exception do begin
-        //TODO
-      end;
-    end;
-  finally
-    S.Free;
-  end;
-  {$ENDIF}
+
 end;
 
 { TRemoteShutdownServerContext }
