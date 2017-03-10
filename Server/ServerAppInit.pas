@@ -1,4 +1,4 @@
-unit RSGlobalAppInit;
+unit ServerAppInit;
 
 interface
 
@@ -7,8 +7,8 @@ uses
   System.SysUtils,
   Vcl.SvcMgr,
   Vcl.Forms,
-  uRemoteShutdownGlobalMain,
-  uRemoteShutdownGlobalTest;
+  uPowerServerMain,
+  uPowerServerTest;
 
 procedure RunApp;
 
@@ -23,13 +23,13 @@ begin
   if T then begin
     //Test application
     Vcl.Forms.Application.Initialize;
-    Vcl.Forms.Application.CreateForm(TJDRemoteShutdownGloTest, JDRemoteShutdownGloTest);
+    Vcl.Forms.Application.CreateForm(TJDRemoteShutdownSvrTest, JDRemoteShutdownSvrTest);
     Vcl.Forms.Application.Run;
   end else begin
     //Service application
     if not Vcl.SvcMgr.Application.DelayInitialize or Vcl.SvcMgr.Application.Installing then
       Vcl.SvcMgr.Application.Initialize;
-    Vcl.SvcMgr.Application.CreateForm(TJDRemoteShutdownGlo, JDRemoteShutdownGlo);
+    Vcl.SvcMgr.Application.CreateForm(TJDPowerServer, JDPowerServer);
     Vcl.SvcMgr.Application.Run;
   end;
 

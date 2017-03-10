@@ -1,6 +1,6 @@
-object JDRemoteShutdownGlo: TJDRemoteShutdownGlo
+object JDPowerGlobal: TJDPowerGlobal
   OldCreateOrder = False
-  DisplayName = 'JD Remote Shutdown Global Service'
+  DisplayName = 'JD Power Global Service'
   AfterInstall = ServiceAfterInstall
   OnStart = ServiceStart
   OnStop = ServiceStop

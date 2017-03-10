@@ -1,7 +1,7 @@
-object JDRemoteShutdownSvr: TJDRemoteShutdownSvr
+object JDPowerServer: TJDPowerServer
   OldCreateOrder = False
   AllowPause = False
-  DisplayName = 'JD Remote Shutdown Server Service'
+  DisplayName = 'JD Power Server Service'
   AfterInstall = ServiceAfterInstall
   OnStart = ServiceStart
   OnStop = ServiceStop

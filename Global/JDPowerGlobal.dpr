@@ -1,11 +1,11 @@
 program JDPowerGlobal;
 
 uses
-  uRemoteShutdownGlobalMain in 'uRemoteShutdownGlobalMain.pas' {JDRemoteShutdownGlo: TService},
+  uPowerGlobalMain in 'uPowerGlobalMain.pas' {JDPowerGlobal: TService},
   JD.Power.Global in '..\Source\JD.Power.Global.pas',
   JD.Power.Common in '..\Source\JD.Power.Common.pas',
-  RSGlobalAppInit in 'RSGlobalAppInit.pas',
-  uRemoteShutdownGlobalTest in 'uRemoteShutdownGlobalTest.pas' {JDRemoteShutdownGloTest};
+  GlobalAppInit in 'GlobalAppInit.pas',
+  uPowerGlobalTest in 'uPowerGlobalTest.pas' {JDRemoteShutdownGloTest};
 
 {$R *.RES}
 

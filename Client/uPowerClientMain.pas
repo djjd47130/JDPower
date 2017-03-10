@@ -1,4 +1,4 @@
-unit uRemoteShutdownClientMain;
+unit uPowerClientMain;
 
 interface
 

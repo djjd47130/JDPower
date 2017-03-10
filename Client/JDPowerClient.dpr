@@ -2,7 +2,7 @@ program JDPowerClient;
 
 uses
   Vcl.Forms,
-  uRemoteShutdownClientMain in 'uRemoteShutdownClientMain.pas' {frmCliMain},
+  uPowerClientMain in 'uPowerClientMain.pas' {frmCliMain},
   JD.Power.Client in '..\Source\JD.Power.Client.pas',
   Vcl.Themes,
   Vcl.Styles;

@@ -1,36 +1,37 @@
-unit uRemoteShutdownServerTest;
+unit uPowerGlobalTest;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  JD.Power.Server;
+  JD.Power.Global, IdBaseComponent, IdComponent, IdCustomTCPServer,
+  IdCustomHTTPServer, IdHTTPServer;
 
 type
-  TJDRemoteShutdownSvrTest = class(TForm)
+  TJDRemoteShutdownGloTest = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FSvr: TRemoteShutdownServer;
+    FSvr: TRemoteShutdownGlobal;
   public
     { Public declarations }
   end;
 
 var
-  JDRemoteShutdownSvrTest: TJDRemoteShutdownSvrTest;
+  JDRemoteShutdownGloTest: TJDRemoteShutdownGloTest;
 
 implementation
 
 {$R *.dfm}
 
-procedure TJDRemoteShutdownSvrTest.FormCreate(Sender: TObject);
+procedure TJDRemoteShutdownGloTest.FormCreate(Sender: TObject);
 begin
-  FSvr:= TRemoteShutdownServer.Create;
+  FSvr:= TRemoteShutdownGlobal.Create;
   FSvr.Start;
 end;
 
-procedure TJDRemoteShutdownSvrTest.FormDestroy(Sender: TObject);
+procedure TJDRemoteShutdownGloTest.FormDestroy(Sender: TObject);
 begin
   FSvr.Terminate;
   FSvr.WaitFor;

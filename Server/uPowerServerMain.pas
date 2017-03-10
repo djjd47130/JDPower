@@ -1,4 +1,4 @@
-unit uRemoteShutdownServerMain;
+unit uPowerServerMain;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   JD.Power.Server;
 
 type
-  TJDRemoteShutdownSvr = class(TService)
+  TJDPowerServer = class(TService)
     procedure ServiceStart(Sender: TService; var Started: Boolean);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
     procedure ServiceAfterInstall(Sender: TService);
@@ -21,7 +21,7 @@ type
   end;
 
 var
-  JDRemoteShutdownSvr: TJDRemoteShutdownSvr;
+  JDPowerServer: TJDPowerServer;
 
 implementation
 
@@ -29,15 +29,15 @@ implementation
 
 procedure ServiceController(CtrlCode: DWord); stdcall;
 begin
-  JDRemoteShutdownSvr.Controller(CtrlCode);
+  JDPowerServer.Controller(CtrlCode);
 end;
 
-function TJDRemoteShutdownSvr.GetServiceController: TServiceController;
+function TJDPowerServer.GetServiceController: TServiceController;
 begin
   Result := ServiceController;
 end;
 
-procedure TJDRemoteShutdownSvr.ServiceAfterInstall(Sender: TService);
+procedure TJDPowerServer.ServiceAfterInstall(Sender: TService);
 var
   R: TRegistry;
 begin
@@ -57,14 +57,14 @@ begin
   end;
 end;
 
-procedure TJDRemoteShutdownSvr.ServiceStart(Sender: TService;
+procedure TJDPowerServer.ServiceStart(Sender: TService;
   var Started: Boolean);
 begin
   FSvr:= TRemoteShutdownServer.Create;
   FSvr.Start;
 end;
 
-procedure TJDRemoteShutdownSvr.ServiceStop(Sender: TService;
+procedure TJDPowerServer.ServiceStop(Sender: TService;
   var Stopped: Boolean);
 begin
   FSvr.Terminate;

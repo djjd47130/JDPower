@@ -1,4 +1,4 @@
-unit uRemoteShutdownGlobalMain;
+unit uPowerGlobalMain;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   JD.Power.Global;
 
 type
-  TJDRemoteShutdownGlo = class(TService)
+  TJDPowerGlobal = class(TService)
     procedure ServiceAfterInstall(Sender: TService);
     procedure ServiceStart(Sender: TService; var Started: Boolean);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
@@ -21,7 +21,7 @@ type
   end;
 
 var
-  JDRemoteShutdownGlo: TJDRemoteShutdownGlo;
+  JDPowerGlobal: TJDPowerGlobal;
 
 implementation
 
@@ -29,15 +29,15 @@ implementation
 
 procedure ServiceController(CtrlCode: DWord); stdcall;
 begin
-  JDRemoteShutdownGlo.Controller(CtrlCode);
+  JDPowerGlobal.Controller(CtrlCode);
 end;
 
-function TJDRemoteShutdownGlo.GetServiceController: TServiceController;
+function TJDPowerGlobal.GetServiceController: TServiceController;
 begin
   Result := ServiceController;
 end;
 
-procedure TJDRemoteShutdownGlo.ServiceAfterInstall(Sender: TService);
+procedure TJDPowerGlobal.ServiceAfterInstall(Sender: TService);
 var
   R: TRegistry;
 begin
@@ -47,7 +47,7 @@ begin
     if R.OpenKey('SYSTEM\CurrentControlSet\Services\'+Name, True) then begin
       try
         R.WriteString('Description',
-          'Central global management point for JD Remote Shutdown system.');
+          'Central global management point for JD Power system.');
       finally
         R.CloseKey;
       end;
@@ -57,14 +57,14 @@ begin
   end;
 end;
 
-procedure TJDRemoteShutdownGlo.ServiceStart(Sender: TService;
+procedure TJDPowerGlobal.ServiceStart(Sender: TService;
   var Started: Boolean);
 begin
   FSvr:= TRemoteShutdownGlobal.Create;
   FSvr.Start;
 end;
 
-procedure TJDRemoteShutdownGlo.ServiceStop(Sender: TService;
+procedure TJDPowerGlobal.ServiceStop(Sender: TService;
   var Stopped: Boolean);
 begin
   FSvr.Terminate;
