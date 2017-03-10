@@ -6,7 +6,9 @@ uses
   Winapi.Windows,
   System.Classes,
   System.SysUtils,
-  ShellApi;
+  ShellApi,
+  SuperObject,
+  IdHTTP;
 
 const
   GLOBAL_PORT = 65468;
@@ -17,8 +19,14 @@ type
 
   TShutdownReason = (srExpected, srUnexpected, srPlanned, srCustomer);
 
-procedure DoCmd(const Cmd: String);
+function DoCmd(const Cmd: String): Boolean;
 function DoShutdownCmd(const ACmd: TShutdownCmd; const AHybrid: Boolean = False;
+  const AForce: Boolean = False; const ATime: Integer = 30;
+  const AComment: String = ''; const AReason: TShutdownReason = srUnexpected;
+  const AReasonMajor: Integer = 0; const AReasonMinor: Integer = 0;
+  const AReasonMsg: String = ''): Boolean;
+function SendShutdownCmd(const AMachine: String; const ACmd: TShutdownCmd;
+  const AHybrid: Boolean = False;
   const AForce: Boolean = False; const ATime: Integer = 30;
   const AComment: String = ''; const AReason: TShutdownReason = srUnexpected;
   const AReasonMajor: Integer = 0; const AReasonMinor: Integer = 0;
@@ -26,9 +34,16 @@ function DoShutdownCmd(const ACmd: TShutdownCmd; const AHybrid: Boolean = False;
 
 implementation
 
-procedure DoCmd(const Cmd: String);
+function DoCmd(const Cmd: String): Boolean;
 begin
-  ShellExecute(0, nil, 'cmd.exe', PChar('/C '+Cmd), nil, SW_HIDE);
+  //Performs command line execution on THIS computer
+  try
+    ShellExecute(0, nil, 'cmd.exe', PChar('/C '+Cmd), nil, SW_HIDE);
+    //TODO: Check if command was actually successful, return result
+    Result:= True;
+  except
+    Result:= False;
+  end;
 end;
 
 function DoShutdownCmd(const ACmd: TShutdownCmd; const AHybrid: Boolean = False;
@@ -39,7 +54,7 @@ function DoShutdownCmd(const ACmd: TShutdownCmd; const AHybrid: Boolean = False;
 var
   CmdLine: String;
 begin
-  //Result:= False;
+  //Performs shutdown command for THIS computer
   case ACmd of
     scShutdown: begin
       CmdLine:= 'shutdown /s';
@@ -64,8 +79,7 @@ begin
     if AForce then
       CmdLine:= CmdLine + ' /f';
     try
-      DoCmd(CmdLine); //PERFORM ACTUAL SHUTDOWN COMMAND
-      Result:= True; //TODO: Result:= DoCmd(CmdLine);
+      Result:= DoCmd(CmdLine); //PERFORM ACTUAL SHUTDOWN COMMAND
     except
       on E: Exception do begin
         raise Exception.Create('Failed to send command: ' + E.Message);
@@ -73,6 +87,65 @@ begin
     end;
   end else begin
     raise Exception.Create('Unable to determine shutdown command.');
+  end;
+end;
+
+function SendShutdownCmd(const AMachine: String; const ACmd: TShutdownCmd;
+  const AHybrid: Boolean = False;
+  const AForce: Boolean = False; const ATime: Integer = 30;
+  const AComment: String = ''; const AReason: TShutdownReason = srUnexpected;
+  const AReasonMajor: Integer = 0; const AReasonMinor: Integer = 0;
+  const AReasonMsg: String = ''): Boolean;
+var
+  Req: ISuperObject;
+  H: TIdHTTP;
+  S: TMemoryStream;
+begin
+  //Sends shutdown command to another machine
+  Req:= SO;
+  try
+    case ACmd of
+      scShutdown:   Req.S['cmd']:= 'Shutdown';
+      scRestart:    Req.S['cmd']:= 'Restart';
+      scHibernate:  Req.S['cmd']:= 'Hibernate';
+      scSleep:      Req.S['cmd']:= 'Sleep';
+      scLogoff:     Req.S['cmd']:= 'Logoff';
+      scLock:       Req.S['cmd']:= 'Lock';
+    end;
+    Req.B['hybrid']:= AHybrid;
+    Req.B['force']:= AForce;
+    Req.I['time']:= ATime;
+    Req.S['comment']:= AComment;
+    Req.O['reason']:= SO;
+    case AReason of
+      srExpected:   Req.O['reason'].S['type']:= 'U';
+      srUnexpected: Req.O['reason'].S['type']:= 'E';
+      srPlanned:    Req.O['reason'].S['type']:= 'P';
+      srCustomer:   Req.O['reason'].S['type']:= 'C';
+    end;
+    Req.O['reason'].I['major']:= AReasonMajor;
+    Req.O['reason'].I['minor']:= AReasonMinor;
+    Req.O['reason'].S['msg']:= AReasonMsg;
+
+    H:= TIdHTTP.Create(nil);
+    try
+      S:= TMemoryStream.Create;
+      try
+        Req.SaveTo(S);
+        S.Position:= 0;
+        H.Post('http://'+AMachine+':65468/Command', S);
+        Result:= True;
+      finally
+        FreeAndNil(S);
+      end;
+    finally
+      FreeAndNil(H);
+    end;
+
+  except
+    on E: Exception do begin
+      Result:= False;
+    end;
   end;
 end;
 

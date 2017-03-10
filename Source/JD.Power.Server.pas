@@ -5,7 +5,7 @@ unit JD.Power.Server;
   - Runs on all client computers which may need to receive shutdown command
   - HTTP Server listening for incoming shutdown command
   - Monitors UPS battery power, watches for power loss
-  - Automatically shuts down this computer and all others on UPS upon power loss
+  - Automatically hibernates this computer and any others upon power loss
 
 *)
 
@@ -125,19 +125,29 @@ begin
   FPerc:= Perc;
   if FSrc = TPowerSource.poDC then begin
     if FPerc <= FConfig.I['battery_threshold'] then begin
-      //UPS is on DC power, so it lost its input, and battery is below threshold
+      //UPS is on DC power and battery is below threshold - need to hibernate
       DoHibernate;
     end;
   end;
 end;
 
 procedure TRemoteShutdownServer.DoHibernate;
+var
+  A: TSuperArray;
+  X: Integer;
+  M: String;
 begin
-  //Send command to all other computers first, telling them to hibernate
-
+  //TODO: Loop through other computers and send command to them first
+  A:= FConfig.A['machines'];
+  if Assigned(A) then begin
+    for X := 0 to A.Length-1 do begin
+      M:= A.S[X];
+      SendShutdownCmd(M, TShutdownCmd.scHibernate);
+    end;
+  end;
 
   //Then, send command to this computer to hibernate
-
+  DoShutdownCmd(TShutdownCmd.scHibernate);
 
 end;
 
@@ -283,9 +293,6 @@ var
   Cmd: String;
   R: ISuperObject;
   Suc: Boolean;
-  A: TSuperArray;
-  M: String;
-  X: Integer;
   function IsCmd(const S: String): Boolean;
   begin
     Result:= SameText(Cmd, S);
@@ -296,21 +303,6 @@ begin
   if not Assigned(O) then begin
     //TODO: Log error - invalid JSON object
     Exit;
-  end;
-
-  //TODO: Loop through other computers and send command to them first
-  A:= FConfig.A['machines'];
-  if Assigned(A) then begin
-    for X := 0 to A.Length-1 do begin
-      M:= A.S[X];
-      //TODO: Forward command to "M" machine
-
-      //Actually this should not be done here - this procedure is only
-      //used when manually sending shutdown command remotely.
-      //Instead, need to catch auto hibernate due to power loss,
-      //and only forward to other machines in that situation.
-
-    end;
   end;
 
 
