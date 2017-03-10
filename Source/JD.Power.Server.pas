@@ -1,4 +1,4 @@
-unit JD.RemoteShutdown.Server;
+unit JD.Power.Server;
 
 (*
   JD Remote Shutdown Server Thread
@@ -17,7 +17,7 @@ uses
   IdYarn, IdThread,
   SuperObject,
   ShellAPI,
-  JD.RemoteShutdown.Common;
+  JD.Power.Common;
 
 type
   TRemoteShutdownServerContext = class;
@@ -37,7 +37,6 @@ type
     procedure Uninit;
     procedure Process;
     procedure LoadConfig;
-    function ServerURL(const ARes: String = ''): String;
     procedure HandleCommand(AContext: TIdContext;
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
     procedure HandleGetStatus(AContext: TRemoteShutdownServerContext;
@@ -51,6 +50,7 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
+    function ServerURL(const ARes: String = ''): String;
     //property DisplayName: String read FDisplayName write FDisplayName;
     //property GlobalHost: String read FGlobalHost write FGlobalHost;
     //property GlobalPort: Integer read FGlobalPort write FGlobalPort;
@@ -263,6 +263,8 @@ var
     Result:= SameText(Cmd, S);
   end;
 begin
+  Suc:= False;
+
   if not Assigned(O) then begin
     //TODO: Log error - invalid JSON object
     Exit;
@@ -308,7 +310,7 @@ begin
     if IsCmd('Lock') then begin
       //TODO: Unsupported
     end else begin
-      CmdLine:= '';
+      //TODO: Unsupported
     end;
 
     R.B['success']:= Suc;
@@ -344,9 +346,11 @@ begin
 end;
 
 procedure TRemoteShutdownServer.Process;
+  {$IFDEF V2}
 var
   O: ISuperObject;
   S: TMemoryStream;
+  {$ENDIF}
 begin
   {$IFDEF V2}
   O:= GetStatusObj;

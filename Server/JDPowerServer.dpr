@@ -1,11 +1,11 @@
-program RemoteShutdownServer;
+program JDPowerServer;
 
 uses
   uRemoteShutdownServerMain in 'uRemoteShutdownServerMain.pas' {JDRemoteShutdownSvr: TService},
-  JD.RemoteShutdown.Server in '..\Source\JD.RemoteShutdown.Server.pas',
+  JD.Power.Server in '..\Source\JD.Power.Server.pas',
   RSServerAppInit in 'RSServerAppInit.pas',
   uRemoteShutdownServerTest in 'uRemoteShutdownServerTest.pas' {JDRemoteShutdownSvrTest},
-  JD.RemoteShutdown.Common in '..\Source\JD.RemoteShutdown.Common.pas';
+  JD.Power.Common in '..\Source\JD.Power.Common.pas';
 
 {$R *.RES}
 

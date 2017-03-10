@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  JD.RemoteShutdown.Global, IdBaseComponent, IdComponent, IdCustomTCPServer,
+  JD.Power.Global, IdBaseComponent, IdComponent, IdCustomTCPServer,
   IdCustomHTTPServer, IdHTTPServer;
 
 type

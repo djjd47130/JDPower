@@ -1,4 +1,4 @@
-unit JD.RemoteShutdown.PowerMonitor;
+unit JD.Power.Monitor;
 
 (*
   JD Power Monitor

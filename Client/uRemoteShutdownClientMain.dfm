@@ -159,7 +159,6 @@ object frmCliMain: TfrmCliMain
           'own system.')
       ScrollBars = ssVertical
       TabOrder = 4
-      ExplicitWidth = 433
     end
     object chkHybrid: TCheckBox
       Left = 160

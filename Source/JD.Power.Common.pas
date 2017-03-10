@@ -1,4 +1,4 @@
-unit JD.RemoteShutdown.Common;
+unit JD.Power.Common;
 
 interface
 
@@ -39,6 +39,7 @@ function DoShutdownCmd(const ACmd: TShutdownCmd; const AHybrid: Boolean = False;
 var
   CmdLine: String;
 begin
+  //Result:= False;
   case ACmd of
     scShutdown: begin
       CmdLine:= 'shutdown /s';
@@ -64,6 +65,7 @@ begin
       CmdLine:= CmdLine + ' /f';
     try
       DoCmd(CmdLine); //PERFORM ACTUAL SHUTDOWN COMMAND
+      Result:= True; //TODO: Result:= DoCmd(CmdLine);
     except
       on E: Exception do begin
         raise Exception.Create('Failed to send command: ' + E.Message);

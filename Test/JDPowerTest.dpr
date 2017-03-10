@@ -1,9 +1,9 @@
-program RemoteShutdownTest;
+program JDPowerTest;
 
 uses
   Vcl.Forms,
   uTestMain in 'uTestMain.pas' {Form1},
-  JD.RemoteShutdown.PowerMonitor in '..\Source\JD.RemoteShutdown.PowerMonitor.pas';
+  JD.Power.Monitor in '..\Source\JD.Power.Monitor.pas';
 
 {$R *.res}
 

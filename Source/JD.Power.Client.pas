@@ -1,4 +1,4 @@
-unit JD.RemoteShutdown.Client;
+unit JD.Power.Client;
 
 interface
 

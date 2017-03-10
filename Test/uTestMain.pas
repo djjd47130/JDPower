@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   IdHTTP,
   SuperObject,
-  JD.RemoteShutdown.PowerMonitor, Vcl.Buttons, Vcl.Samples.Spin;
+  JD.Power.Monitor, Vcl.Buttons, Vcl.Samples.Spin;
 
 type
   TForm1 = class(TForm)
@@ -109,8 +109,6 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
-var
-  T: TSysCharSet;
 begin
   FreeAndNil(FMon);
 end;

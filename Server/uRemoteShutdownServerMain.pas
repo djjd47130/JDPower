@@ -7,7 +7,7 @@ uses
   System.SysUtils, System.Classes,
   Vcl.SvcMgr,
   Registry,
-  JD.RemoteShutdown.Server;
+  JD.Power.Server;
 
 type
   TJDRemoteShutdownSvr = class(TService)

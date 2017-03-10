@@ -3,7 +3,7 @@
         <ProjectGuid>{32143F9A-DB2E-4B77-8543-939D44B9B77B}</ProjectGuid>
         <ProjectVersion>18.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
-        <MainSource>RemoteShutdownClient.dpr</MainSource>
+        <MainSource>JDPowerClient.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -47,7 +47,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <Custom_Styles>Light|VCLSTYLE|$(PUBLIC)\Documents\Embarcadero\Studio\17.0\Styles\Light.vsf</Custom_Styles>
-        <SanitizedProjectName>RemoteShutdownClient</SanitizedProjectName>
+        <SanitizedProjectName>JDPowerClient</SanitizedProjectName>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
@@ -102,7 +102,7 @@
             <Form>frmCliMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\Source\JD.RemoteShutdown.Client.pas"/>
+        <DCCReference Include="..\Source\JD.Power.Client.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -121,13 +121,13 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">RemoteShutdownClient.dpr</Source>
+                    <Source Name="MainSource">JDPowerClient.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Deployment Version="2">
-                <DeployFile LocalName="Win32\Debug\RemoteShutdownClient.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\JDPowerClient.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>RemoteShutdownClient.exe</RemoteName>
+                        <RemoteName>JDPowerClient.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

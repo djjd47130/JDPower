@@ -107,7 +107,7 @@ end;
 procedure TfrmCliMain.cmdSendClick(Sender: TObject);
 var
   Req: ISuperObject;
-  A, O, M: ISuperObject;
+  A, M: ISuperObject;
   S: TMemoryStream;
   X: Integer;
   I: TListItem;

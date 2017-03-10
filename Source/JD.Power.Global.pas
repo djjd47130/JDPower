@@ -1,4 +1,4 @@
-unit JD.RemoteShutdown.Global;
+unit JD.Power.Global;
 
 (*
   JD Remote Shutdown Global Thread
@@ -20,7 +20,7 @@ uses
   SuperObject,
   ShellAPI,
   SyncObjs,
-  JD.RemoteShutdown.Common;
+  JD.Power.Common;
 
 type
   TRemoteShutdownGlobalContext = class;
@@ -204,6 +204,7 @@ begin
 end;
 
 function TRemoteShutdownGlobal.GetHomePage: String;
+  {$IFDEF V2}
   procedure A(const S: String);
   begin
     Result:= Result + S + sLineBreak;
@@ -211,6 +212,7 @@ function TRemoteShutdownGlobal.GetHomePage: String;
 var
   X: Integer;
   M: TRSMachine;
+  {$ENDIF}
 begin
   {$IFDEF V2}
   Result:= '';
@@ -337,9 +339,12 @@ procedure TRemoteShutdownGlobal.HandleGetClients(
   AContext: TRemoteShutdownGlobalContext; ARequestInfo: TIdHTTPRequestInfo;
   AResponseInfo: TIdHTTPResponseInfo);
 var
-  R, O: ISuperObject;
+  R: ISuperObject;
+  {$IFDEF V2}
+  O: ISuperObject;
   X: Integer;
   M: TRSMachine;
+  {$ENDIF}
 begin
   R:= SA([]);
   try
@@ -483,9 +488,11 @@ procedure TRemoteShutdownGlobal.HandlePostPing(
   AResponseInfo: TIdHTTPResponseInfo; const O: ISuperObject);
 var
   R: ISuperObject;
+  {$IFDEF V2}
   X: Integer;
   M: TRSMachine;
   E: Boolean;
+  {$ENDIF}
 begin
   R:= SO;
   try
@@ -525,11 +532,13 @@ begin
 end;
 
 procedure TRemoteShutdownGlobal.Process;
+  {$IFDEF V2}
 const
   SEC_DELAY = 20; //20 seconds timeout
 var
   M: TRSMachine;
   X: Integer;
+  {$ENDIF}
 begin
   {$IFDEF V2}
   FLock.Enter;

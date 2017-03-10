@@ -1,9 +1,9 @@
-program RemoteShutdownClient;
+program JDPowerClient;
 
 uses
   Vcl.Forms,
   uRemoteShutdownClientMain in 'uRemoteShutdownClientMain.pas' {frmCliMain},
-  JD.RemoteShutdown.Client in '..\Source\JD.RemoteShutdown.Client.pas',
+  JD.Power.Client in '..\Source\JD.Power.Client.pas',
   Vcl.Themes,
   Vcl.Styles;
 

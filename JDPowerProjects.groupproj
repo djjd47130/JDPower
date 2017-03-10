@@ -3,16 +3,16 @@
         <ProjectGuid>{2CF30A4A-9556-4492-91FF-061FCC17D7A5}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Global\RemoteShutdownGlobal.dproj">
+        <Projects Include="Global\JDPowerGlobal.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Server\RemoteShutdownServer.dproj">
+        <Projects Include="Server\JDPowerServer.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\RemoteShutdownClient.dproj">
+        <Projects Include="Client\JDPowerClient.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Test\RemoteShutdownTest.dproj">
+        <Projects Include="Test\JDPowerTest.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -23,50 +23,50 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="RemoteShutdownGlobal">
-        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj"/>
+    <Target Name="JDPowerGlobal">
+        <MSBuild Projects="Global\JDPowerGlobal.dproj"/>
     </Target>
-    <Target Name="RemoteShutdownGlobal:Clean">
-        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj" Targets="Clean"/>
+    <Target Name="JDPowerGlobal:Clean">
+        <MSBuild Projects="Global\JDPowerGlobal.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="RemoteShutdownGlobal:Make">
-        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj" Targets="Make"/>
+    <Target Name="JDPowerGlobal:Make">
+        <MSBuild Projects="Global\JDPowerGlobal.dproj" Targets="Make"/>
     </Target>
-    <Target Name="RemoteShutdownServer">
-        <MSBuild Projects="Server\RemoteShutdownServer.dproj"/>
+    <Target Name="JDPowerServer">
+        <MSBuild Projects="Server\JDPowerServer.dproj"/>
     </Target>
-    <Target Name="RemoteShutdownServer:Clean">
-        <MSBuild Projects="Server\RemoteShutdownServer.dproj" Targets="Clean"/>
+    <Target Name="JDPowerServer:Clean">
+        <MSBuild Projects="Server\JDPowerServer.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="RemoteShutdownServer:Make">
-        <MSBuild Projects="Server\RemoteShutdownServer.dproj" Targets="Make"/>
+    <Target Name="JDPowerServer:Make">
+        <MSBuild Projects="Server\JDPowerServer.dproj" Targets="Make"/>
     </Target>
-    <Target Name="RemoteShutdownClient">
-        <MSBuild Projects="Client\RemoteShutdownClient.dproj"/>
+    <Target Name="JDPowerClient">
+        <MSBuild Projects="Client\JDPowerClient.dproj"/>
     </Target>
-    <Target Name="RemoteShutdownClient:Clean">
-        <MSBuild Projects="Client\RemoteShutdownClient.dproj" Targets="Clean"/>
+    <Target Name="JDPowerClient:Clean">
+        <MSBuild Projects="Client\JDPowerClient.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="RemoteShutdownClient:Make">
-        <MSBuild Projects="Client\RemoteShutdownClient.dproj" Targets="Make"/>
+    <Target Name="JDPowerClient:Make">
+        <MSBuild Projects="Client\JDPowerClient.dproj" Targets="Make"/>
     </Target>
-    <Target Name="RemoteShutdownTest">
-        <MSBuild Projects="Test\RemoteShutdownTest.dproj"/>
+    <Target Name="JDPowerTest">
+        <MSBuild Projects="Test\JDPowerTest.dproj"/>
     </Target>
-    <Target Name="RemoteShutdownTest:Clean">
-        <MSBuild Projects="Test\RemoteShutdownTest.dproj" Targets="Clean"/>
+    <Target Name="JDPowerTest:Clean">
+        <MSBuild Projects="Test\JDPowerTest.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="RemoteShutdownTest:Make">
-        <MSBuild Projects="Test\RemoteShutdownTest.dproj" Targets="Make"/>
+    <Target Name="JDPowerTest:Make">
+        <MSBuild Projects="Test\JDPowerTest.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="RemoteShutdownGlobal;RemoteShutdownServer;RemoteShutdownClient;RemoteShutdownTest"/>
+        <CallTarget Targets="JDPowerGlobal;JDPowerServer;JDPowerClient;JDPowerTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="RemoteShutdownGlobal:Clean;RemoteShutdownServer:Clean;RemoteShutdownClient:Clean;RemoteShutdownTest:Clean"/>
+        <CallTarget Targets="JDPowerGlobal:Clean;JDPowerServer:Clean;JDPowerClient:Clean;JDPowerTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="RemoteShutdownGlobal:Make;RemoteShutdownServer:Make;RemoteShutdownClient:Make;RemoteShutdownTest:Make"/>
+        <CallTarget Targets="JDPowerGlobal:Make;JDPowerServer:Make;JDPowerClient:Make;JDPowerTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

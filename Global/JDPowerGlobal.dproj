@@ -3,7 +3,7 @@
         <ProjectGuid>{4F494DBE-FABF-47D1-B647-567FEEE02E4E}</ProjectGuid>
         <ProjectVersion>18.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
-        <MainSource>RemoteShutdownGlobal.dpr</MainSource>
+        <MainSource>JDPowerGlobal.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -49,7 +49,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <SanitizedProjectName>RemoteShutdownGlobal</SanitizedProjectName>
+        <SanitizedProjectName>JDPowerGlobal</SanitizedProjectName>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
@@ -102,8 +102,8 @@
             <FormType>dfm</FormType>
             <DesignClass>TService</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\Source\JD.RemoteShutdown.Global.pas"/>
-        <DCCReference Include="..\Source\JD.RemoteShutdown.Common.pas"/>
+        <DCCReference Include="..\Source\JD.Power.Global.pas"/>
+        <DCCReference Include="..\Source\JD.Power.Common.pas"/>
         <DCCReference Include="RSGlobalAppInit.pas"/>
         <DCCReference Include="uRemoteShutdownGlobalTest.pas">
             <Form>JDRemoteShutdownGloTest</Form>
@@ -127,13 +127,13 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">RemoteShutdownGlobal.dpr</Source>
+                    <Source Name="MainSource">JDPowerGlobal.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Deployment Version="2">
-                <DeployFile LocalName="Win32\Debug\RemoteShutdownGlobal.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\JDPowerGlobal.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>RemoteShutdownGlobal.exe</RemoteName>
+                        <RemoteName>JDPowerGlobal.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
