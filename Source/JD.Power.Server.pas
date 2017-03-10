@@ -48,6 +48,7 @@ type
     procedure PowerBatteryPercent(Sender: TObject; const Perc: Single);
     procedure PowerSourceChange(Sender: TObject; const Src: TPowerSource);
     procedure DoHibernate;
+    procedure CheckHibernate;
   protected
     procedure Execute; override;
   public
@@ -95,9 +96,10 @@ begin
   FMon:= TPowerMonitor.Create(nil);
   FMon.OnSourceChange:= PowerSourceChange;
   FMon.OnBatteryPercent:= PowerBatteryPercent;
-  FMon.Settings:= [
-    TPowerSetting.psACDCPowerSource,
-    TPowerSetting.psBatteryPercentage];
+  FMon.Settings:= [psACDCPowerSource, psBatteryPercentage,
+    psConsoleDisplayState, psGlobalUserPresence, psIdleBackgroundTask,
+    psMonitorPower, psPowerSaving, psPowerSchemePersonality,
+    psSessionDisplayStatus, psSessionUserPresence, psSystemAwayMode];
 end;
 
 procedure TJDPowerServerThread.Uninit;
@@ -113,13 +115,19 @@ procedure TJDPowerServerThread.PowerSourceChange(Sender: TObject;
   const Src: TPowerSource);
 begin
   FSrc:= Src;
+  CheckHibernate;
 end;
 
 procedure TJDPowerServerThread.PowerBatteryPercent(Sender: TObject;
   const Perc: Single);
 begin
   FPerc:= Perc;
-  if FSrc = TPowerSource.poDC then begin
+  CheckHibernate;
+end;
+
+procedure TJDPowerServerThread.CheckHibernate;
+begin
+  if FSrc <> TPowerSource.poAC then begin
     if FPerc <= FConfig.I['battery_threshold'] then begin
       //UPS is on DC power and battery is below threshold - need to hibernate
       DoHibernate;
@@ -154,8 +162,6 @@ var
   procedure SaveDef;
   begin
     FConfig:= SO;
-    FConfig.S['global_host']:= 'LocalHost';
-    FConfig.I['global_port']:= GLOBAL_PORT;
     FConfig.S['display_name']:= 'Untitled Machine';
     FConfig.I['listen_port']:= CLIENT_PORT;
     FConfig.I['battery_threshold']:= 20;
@@ -236,7 +242,7 @@ var
     Result:= SameText(S, R);
   end;
 begin
-  //Received any type of command from the global server
+  //Received any type of command
   C:= TJDPowerServerContext(AContext);
   R:= ARequestInfo.Document + '/';
   Delete(R, 1, 1);

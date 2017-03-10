@@ -1,0 +1,6 @@
+{
+ "battery_threshold": 20,
+ "machines": [],
+ "listen_port": 65469,
+ "display_name": "Untitled Machine"
+}

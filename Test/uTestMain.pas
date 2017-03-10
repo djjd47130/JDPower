@@ -83,9 +83,7 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-
   FMon:= TPowerMonitor.Create(nil);
-
   FMon.OnBatteryPercent:= PowerBatteryPercent;
   FMon.OnSourceChange:= PowerSourceChange;
   FMon.OnConsoleDisplayState:= PowerConsoleDisplayStateChange;
@@ -101,7 +99,6 @@ begin
   FMon.OnSuspend:= PowerSuspend;
   FMon.OnAwayMode:= PowerAwayMode;
   FMon.OnPersonality:= PowerPersonality;
-
   FMon.Settings:= [psACDCPowerSource, psBatteryPercentage,
     psConsoleDisplayState, psGlobalUserPresence, psIdleBackgroundTask,
     psMonitorPower, psPowerSaving, psPowerSchemePersonality,

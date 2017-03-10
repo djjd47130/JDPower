@@ -22,6 +22,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Generics.Collections,
+  ActiveX,
   Winapi.Windows, Winapi.Messages;
 
 type

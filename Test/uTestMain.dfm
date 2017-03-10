@@ -299,8 +299,6 @@ object Form1: TForm1
     ScrollBars = ssBoth
     TabOrder = 0
     WordWrap = False
-    ExplicitWidth = 788
-    ExplicitHeight = 440
   end
   object BitBtn1: TBitBtn
     Left = 496

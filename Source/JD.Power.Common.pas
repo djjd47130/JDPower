@@ -11,7 +11,6 @@ uses
   IdHTTP;
 
 const
-  GLOBAL_PORT = 65468;
   CLIENT_PORT = 65469;
 
 type
@@ -133,7 +132,7 @@ begin
       try
         Req.SaveTo(S);
         S.Position:= 0;
-        H.Post('http://'+AMachine+':65468/Command', S);
+        H.Post('http://'+AMachine+':65469/Command', S);
         Result:= True;
       finally
         FreeAndNil(S);
