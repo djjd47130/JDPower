@@ -1,0 +1,1 @@
+RemoteShutdownServer.exe /install

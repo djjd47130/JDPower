@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2CF30A4A-9556-4492-91FF-061FCC17D7A5}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Global\RemoteShutdownGlobal.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Server\RemoteShutdownServer.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Client\RemoteShutdownClient.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Test\RemoteShutdownTest.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RemoteShutdownGlobal">
+        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj"/>
+    </Target>
+    <Target Name="RemoteShutdownGlobal:Clean">
+        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RemoteShutdownGlobal:Make">
+        <MSBuild Projects="Global\RemoteShutdownGlobal.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RemoteShutdownServer">
+        <MSBuild Projects="Server\RemoteShutdownServer.dproj"/>
+    </Target>
+    <Target Name="RemoteShutdownServer:Clean">
+        <MSBuild Projects="Server\RemoteShutdownServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RemoteShutdownServer:Make">
+        <MSBuild Projects="Server\RemoteShutdownServer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RemoteShutdownClient">
+        <MSBuild Projects="Client\RemoteShutdownClient.dproj"/>
+    </Target>
+    <Target Name="RemoteShutdownClient:Clean">
+        <MSBuild Projects="Client\RemoteShutdownClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RemoteShutdownClient:Make">
+        <MSBuild Projects="Client\RemoteShutdownClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RemoteShutdownTest">
+        <MSBuild Projects="Test\RemoteShutdownTest.dproj"/>
+    </Target>
+    <Target Name="RemoteShutdownTest:Clean">
+        <MSBuild Projects="Test\RemoteShutdownTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RemoteShutdownTest:Make">
+        <MSBuild Projects="Test\RemoteShutdownTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RemoteShutdownGlobal;RemoteShutdownServer;RemoteShutdownClient;RemoteShutdownTest"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RemoteShutdownGlobal:Clean;RemoteShutdownServer:Clean;RemoteShutdownClient:Clean;RemoteShutdownTest:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RemoteShutdownGlobal:Make;RemoteShutdownServer:Make;RemoteShutdownClient:Make;RemoteShutdownTest:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
