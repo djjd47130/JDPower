@@ -5,7 +5,8 @@ uses
   JD.Power.Server in '..\Source\JD.Power.Server.pas',
   ServerAppInit in 'ServerAppInit.pas',
   uPowerServerTest in 'uPowerServerTest.pas' {JDRemoteShutdownSvrTest},
-  JD.Power.Common in '..\Source\JD.Power.Common.pas';
+  JD.Power.Common in '..\Source\JD.Power.Common.pas',
+  JD.Power.Monitor in '..\Source\JD.Power.Monitor.pas';
 
 {$R *.RES}
 

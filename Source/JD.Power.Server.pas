@@ -17,7 +17,8 @@ uses
   IdYarn, IdThread,
   SuperObject,
   ShellAPI,
-  JD.Power.Common;
+  JD.Power.Common,
+  JD.Power.Monitor;
 
 type
   TRemoteShutdownServerContext = class;
@@ -30,9 +31,7 @@ type
     FSvr: TIdHTTPServer;
     FCli: TIdHTTP;
     FConfig: ISuperObject;
-    //FGlobalHost: String;
-    //FGlobalPort: Integer;
-    //FDisplayName: String;
+    FMon: TPowerMonitor;
     procedure Init;
     procedure Uninit;
     procedure Process;
@@ -51,15 +50,11 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
     function ServerURL(const ARes: String = ''): String;
-    //property DisplayName: String read FDisplayName write FDisplayName;
-    //property GlobalHost: String read FGlobalHost write FGlobalHost;
-    //property GlobalPort: Integer read FGlobalPort write FGlobalPort;
   end;
 
   TRemoteShutdownServerContext = class(TIdServerContext)
   private
-    //Actually, this object represents a connection FROM the global server
-    //  TO this workstation, to send shutdown commands, etc.
+
   public
     constructor Create(AConnection: TIdTCPConnection; AYarn: TIdYarn;
       AList: TIdContextThreadList = nil); override;
@@ -88,7 +83,6 @@ procedure TRemoteShutdownServer.Init;
 begin
   CoInitialize(nil);
   FSvr:= TIdHTTPServer.Create(nil);
-  //FSvr.DefaultPort:= DEF_PORT;
   FSvr.ContextClass:= TRemoteShutdownServerContext;
   FSvr.OnCommandGet:= HandleCommand;
   FSvr.OnCommandOther:= HandleCommand;
@@ -131,7 +125,7 @@ begin
 
   FN:= ExtractFilePath(ParamStr(0));
   FN:= IncludeTrailingPathDelimiter(FN);
-  FN:= FN + 'RemoteShutdownServer.json';
+  FN:= FN + 'JDPowerServer.json';
   L:= TStringList.Create;
   try
     if FileExists(FN) then begin
@@ -146,19 +140,10 @@ begin
 
     FConfig:= O;
     FConfig._AddRef;
-
-    {
-    FDisplayName:= O.S['display_name'];
-    FGlobalHost:= O.S['global_host'];
-    FGlobalPort:= O.I['global_port'];
-    }
-
     FSvr.Bindings.Clear;
     FSvr.Bindings.Add.SetBinding('', O.I['listen_port'], TIdIPVersion.Id_IPv4);
 
     //TODO: Load list of other machines which are to be shut down if this one is
-
-
 
   finally
     L.Free;
