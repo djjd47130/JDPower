@@ -5,16 +5,18 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  JD.ThreadTest;
+  JD.ThreadTest, Vcl.StdCtrls;
 
 type
   TForm2 = class(TForm)
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
   private
     FThread: TDataThread;
+  protected
+    procedure WMPowerBroadcast(var Msg: TMsg); message WM_POWERBROADCAST;
   public
-    { Public declarations }
+
   end;
 
 var
@@ -24,17 +26,24 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  FThread:= TDataThread.Create('Testing');
+  FThread.Start;
+end;
+
+procedure TForm2.FormDestroy(Sender: TObject);
 begin
   FThread.Terminate;
   //FThread.WaitFor;
   FreeAndNil(FThread);
 end;
 
-procedure TForm2.FormCreate(Sender: TObject);
+procedure TForm2.WMPowerBroadcast(var Msg: TMsg);
+var
+  S: String;
 begin
-  FThread:= TDataThread.Create('Testing');
-  FThread.Start;
+  S:= 'Testing';
 end;
 
 end.

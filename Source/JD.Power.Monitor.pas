@@ -8,22 +8,18 @@ unit JD.Power.Monitor;
   events when different power related changes occur.
 
   Component: TPowerMonitor
-
-  How to use:
   - Create an instance of TPowerMonitor component
     - Recommended to only use one instance, not multiple
   - Choose desired power settings to get notified of using Settings property
   - Implement event handlers for those events you wish to monitor
   - Component automatically takes care of the rest of the work
-
 *)
 
 interface
 
 uses
   System.Classes, System.SysUtils, System.Generics.Collections,
-  ActiveX,
-  Winapi.Windows, Winapi.Messages;
+  Winapi.ActiveX, Winapi.Windows, Winapi.Messages;
 
 type
   TPowerSetting = (psACDCPowerSource, psBatteryPercentage,
@@ -174,31 +170,25 @@ var
   B: Boolean;
 begin
   Handled := True;
-  //DoLog('MSG ' + IntToStr(Msg.Msg));
   case Msg.Msg of
     WM_QUERYENDSESSION: begin
       MQ:= TWMQueryEndSession(Msg);
-
       B:= True;
       //TODO: Test for any of the 3 possible values in mask
       //ENDSESSION_CLOSEAPP
       //ENDSESSION_CRITICAL
       //ENDSESSION_LOGOFF
-
       if Assigned(Self.FOnQueryEndSession) then
         FOnQueryEndSession(Self, B);
       if not B then
         MQ.Result:= 0; //Instructs Windows not to proceed shutting down
-
     end;
     WM_ENDSESSION: begin
       ME:= TWMEndSession(Msg);
-
       B:= True;
       case Msg.LParam of
         0: begin
           //System is shutting down or restarting, cannot determine which event...
-
         end;
         else begin
           //TODO: Test for any of the 3 possible values in mask
@@ -208,9 +198,9 @@ begin
 
         end;
       end;
-
     end;
     WM_POWERBROADCAST: begin
+      //TODO: Why is this never received when inside of a thread?
       case Msg.WParam of
         PBT_APMPOWERSTATUSCHANGE: begin
           //Power status has changed.
@@ -262,7 +252,7 @@ var
   end;
   function ValAsGUID: TGUID;
   begin
-    Result:= StringToGUID('{00000000-0000-0000-0000-000000000000}');
+    Result:= StringToGUID('{00000000-0000-0000-0000-000000000000}'); //Default
     if SizeOf(TGUID) = Val.DataLength then begin
       Move(Val.Data, Result, Val.DataLength);
     end;
@@ -351,8 +341,7 @@ begin
     if Assigned(FOnAwayMode) then
       FOnAwayMode(Self, TPowerAwayMode(ValAsDWORD));
   end else begin
-    //Unrecognized GUID
-
+    //TODO: Handle Unrecognized GUID
   end;
 end;
 

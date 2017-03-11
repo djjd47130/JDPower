@@ -211,6 +211,7 @@ procedure TJDPowerServerThread.ProcessMessages;
 var
   Msg: TMsg;
 begin
+  {
   while GetMessage(Msg, FWnd, 0, 0) > 0 do
   begin
     if Msg.message = WM_DATA_AVA then begin
@@ -221,6 +222,7 @@ begin
       DispatchMessage(msg)
     end;
   end;
+  }
 end;
 
 procedure TJDPowerServerThread.Execute;
@@ -228,9 +230,11 @@ var
   X: Integer;
   inMess: Msg;
 begin
+  {
   if RegisterClass(FWndClass) = 0 then Exit;
   FWnd := CreateWindow(FWndClass.lpszClassName, PChar(FTitle), WS_DLGFRAME, XPos, YPos, 698, 517, 0, 0, HInstance, nil);
   if FWnd = 0 then Exit;
+  }
 
   Init;
   try
