@@ -2,11 +2,11 @@ program JDPowerServer;
 
 uses
   uPowerServerMain in 'uPowerServerMain.pas' {JDPowerServer: TService},
+  uPowerServerTest in 'uPowerServerTest.pas' {JDPowerServerTest},
   ServerAppInit in 'ServerAppInit.pas',
   JD.Power.Server in '..\Source\JD.Power.Server.pas',
   JD.Power.Common in '..\Source\JD.Power.Common.pas',
-  JD.Power.Monitor in '..\Source\JD.Power.Monitor.pas',
-  uPowerServerTest in 'uPowerServerTest.pas' {JDPowerServerTest};
+  JD.Power.Monitor in '..\Source\JD.Power.Monitor.pas';
 
 {$R *.RES}
 

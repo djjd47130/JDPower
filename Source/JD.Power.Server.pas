@@ -11,8 +11,8 @@ unit JD.Power.Server;
 interface
 
 uses
-  System.Classes, System.SysUtils,
-  Winapi.Windows, Winapi.ActiveX, Winapi.ShellAPI,
+  System.Classes, System.SysUtils, System.SyncObjs,
+  Winapi.Windows, Winapi.ActiveX, Winapi.ShellAPI, Winapi.Messages,
   IdHTTP, IdHTTPServer, IdTCPConnection, IdCustomHTTPServer, IdTCPServer,
   IdCustomTCPServer, IdContext, IdGlobal, IdYarn, IdThread,
   SuperObject,
@@ -33,6 +33,7 @@ type
     FMon: TPowerMonitor;
     FSrc: TPowerSource;
     FPerc: Single;
+    FWndClass: WNDCLASS;
     procedure Init;
     procedure Uninit;
     procedure Process;
@@ -49,6 +50,7 @@ type
     procedure PowerSourceChange(Sender: TObject; const Src: TPowerSource);
     procedure DoHibernate;
     procedure CheckHibernate;
+    procedure ProcessMessages;
   protected
     procedure Execute; override;
   public
@@ -205,14 +207,36 @@ begin
   end;
 end;
 
+procedure TJDPowerServerThread.ProcessMessages;
+var
+  Msg: TMsg;
+begin
+  while GetMessage(Msg, FWnd, 0, 0) > 0 do
+  begin
+    if Msg.message = WM_DATA_AVA then begin
+      MessageBox(0, 'Data Available', 'Test', 0);
+    end else
+    begin
+      TranslateMessage(msg);
+      DispatchMessage(msg)
+    end;
+  end;
+end;
+
 procedure TJDPowerServerThread.Execute;
 var
   X: Integer;
+  inMess: Msg;
 begin
+  if RegisterClass(FWndClass) = 0 then Exit;
+  FWnd := CreateWindow(FWndClass.lpszClassName, PChar(FTitle), WS_DLGFRAME, XPos, YPos, 698, 517, 0, 0, HInstance, nil);
+  if FWnd = 0 then Exit;
+
   Init;
   try
     while not Terminated do begin
       try
+        ProcessMessages;
         Process;
       except
         on E: Exception do begin

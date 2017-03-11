@@ -9,6 +9,9 @@
         <Projects Include="Test\JDPowerTest.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ThreadTest\ThreadTest.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="JDPowerTest:Make">
         <MSBuild Projects="Test\JDPowerTest.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ThreadTest">
+        <MSBuild Projects="ThreadTest\ThreadTest.dproj"/>
+    </Target>
+    <Target Name="ThreadTest:Clean">
+        <MSBuild Projects="ThreadTest\ThreadTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ThreadTest:Make">
+        <MSBuild Projects="ThreadTest\ThreadTest.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="JDPowerServer;JDPowerTest"/>
+        <CallTarget Targets="JDPowerServer;JDPowerTest;ThreadTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="JDPowerServer:Clean;JDPowerTest:Clean"/>
+        <CallTarget Targets="JDPowerServer:Clean;JDPowerTest:Clean;ThreadTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="JDPowerServer:Make;JDPowerTest:Make"/>
+        <CallTarget Targets="JDPowerServer:Make;JDPowerTest:Make;ThreadTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
