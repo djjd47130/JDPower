@@ -15,4 +15,13 @@ object Form2: TForm2
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
+  object Memo1: TMemo
+    Left = 64
+    Top = 24
+    Width = 481
+    Height = 249
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 0
+  end
 end

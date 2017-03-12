@@ -9,12 +9,14 @@ uses
 
 type
   TForm2 = class(TForm)
+    Memo1: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
     FThread: TDataThread;
+    procedure ThreadEvent(Sender: TObject; Message: TMessage);
   protected
-    procedure WMPowerBroadcast(var Msg: TMsg); message WM_POWERBROADCAST;
+
   public
 
   end;
@@ -29,6 +31,7 @@ implementation
 procedure TForm2.FormCreate(Sender: TObject);
 begin
   FThread:= TDataThread.Create('Testing');
+  FThread.OnMessage:= ThreadEvent;
   FThread.Start;
 end;
 
@@ -39,11 +42,9 @@ begin
   FreeAndNil(FThread);
 end;
 
-procedure TForm2.WMPowerBroadcast(var Msg: TMsg);
-var
-  S: String;
+procedure TForm2.ThreadEvent(Sender: TObject; Message: TMessage);
 begin
-  S:= 'Testing';
+  Memo1.Lines.Append('Message ' + IntToStr(Message.Msg));
 end;
 
 end.
